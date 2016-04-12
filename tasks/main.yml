@@ -59,5 +59,6 @@
    template: src=arangod.j2 dest=/etc/arangod.conf owner=arangodb mode=0775
 
  - name: Bootstrap the server startup
-   notify: bootstrap arangodb
-
+   command: echo "Bootstrap the cluster"
+   notify: 
+   - bootstrap arangodb
