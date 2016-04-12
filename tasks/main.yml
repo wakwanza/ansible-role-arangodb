@@ -1,0 +1,63 @@
+---
+# tasks file for arangodb
+ - name: Add key for Debian systems
+   apt_key: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ansible_distribution_major_version}}.0/Release.key state=present
+   when: ansible_distribution == "Debian"
+
+ - name: Add key for Ubuntu systems
+   apt_key: url=https://www.arangodb.com/repositories/arangodb2/x{{ ansible_distribution }}_{{ ansible_distribution_version }}/Release.key state=present
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Add repo for Ubuntu systems
+   apt_repository: repo='deb https://www.arangodb.com/repositories/arangodb2/x{{ ansible_distribution }}_{{ ansible_distribution_version }} /' state=present filename=arangodb
+   when: ansible_distribution == "Ubuntu"
+
+ - name: Add repo for Debian systems
+   apt_repository: repo='deb https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution_major_version }}.0 /' state=present filename=arangodb
+   when: ansible_distribution == "Debian"
+
+ - name: Add repo for CentOS version 6
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution }}-{{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   when: (ansible_distribution == "CentOS") and ( ansible_distribution_major_version == "6")
+
+ - name: Add repo for RHEL version 6
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_RHEL-{{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   when: (ansible_distribution == "RedHat") and ( ansible_distribution_major_version == "6")
+
+ - name: Add repo for CentOS version 7
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution }}-{{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   when: (ansible_distribution == "CentOS") and ( ansible_distribution_major_version == "7")
+
+ - name: Add repo for RHEL version 7
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_RHEL-{{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   when: (ansible_distribution == "RedHat") and ( ansible_distribution_major_version == "7")
+
+ - name: Add repo for Fedora
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   when: ansible_distribution == "Fedora"
+ 
+ - name: Add the zypper repo for Suse family
+   zypper_repository: repo=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution_version }}/arangodb.repo refresh=yes state=present
+   when: ansible_distribution == "openSUSE"
+
+ - name: Install the package for arangodb 
+   package: name=arangodb state=latest
+
+ - name: Ensure arangodb group exists
+   group: name=arangodb state=present system=yes
+
+ - name: Ensure arangodb user exists
+   user: name=arangodb state=present groups=disk,wheel,arangodb createhome=no system=yes
+
+ - name: Make the data storage base directory
+   file: dest={{ storage_directory_base }} state=directory group=arangodb mode=0775
+
+ - name: Add the server certifcate for secure communication
+   copy: src=certbundle.pem dest={{ ssl_cert_location }}/certbundle.pem mode=0665 owner=arangodb
+
+ - name: Put in place the config file
+   template: src=arangod.j2 dest=/etc/arangod.conf owner=arangodb mode=0775
+
+ - name: Bootstrap the server startup
+   notify: bootstrap arangodb
+

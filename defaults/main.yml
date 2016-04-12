@@ -1,0 +1,4 @@
+---
+# defaults file for arangodb
+storage_directory_base: /var/lib
+ssl_cert_location: /etc/ssl/certs

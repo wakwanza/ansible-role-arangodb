@@ -1,0 +1,46 @@
+# ArangoDB configuration file
+#
+
+[database]
+directory = {{ storage_directory_base }}/arangodb/databases
+
+
+[server]
+endpoint = tcp://127.0.0.1:8529
+uid = arangodb
+gid = arangodb
+disable-authentication = false
+keyfile = {{ ssl_cert_location }}/certbundle.pem
+ssl-cache = true
+disable-statistics = true
+
+
+[scheduler]
+threads = 4
+
+
+[javascript]
+startup-directory = @PKGDATADIR@/js
+app-path = @LOCALSTATEDIR@/lib/arangodb-apps
+v8-contexts = 5
+
+
+[log]
+level = info
+file = @LOCALSTATEDIR@/log/arangodb/arangod.log
+
+
+[cluster]
+disable-dispatcher-kickstarter = false
+disable-dispatcher-frontend = false
+
+data-path = @LOCALSTATEDIR@/lib/arangodb/cluster
+log-path = @LOCALSTATEDIR@/log/arangodb/cluster
+agent-path = @LIBEXECDIR@/arangodb/etcd-arango@PROGRAM_SUFFIX@
+arangod-path = @SBINDIR@/arangod@PROGRAM_SUFFIX@
+dbserver-config = @SYSCONFDIR@/arangod.conf
+coordinator-config = @SYSCONFDIR@/arangod.conf
+
+my-id = {{ ansible_hostname }}
+my-address = tcp://{{ ansible_eth0.ipv4.address }}:8530
+

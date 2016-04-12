@@ -1,0 +1,4 @@
+---
+# handlers file for arangodb
+ - name: bootstrap arangodb
+   service: name=arangodb state=started enabled=yes
