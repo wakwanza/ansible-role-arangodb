@@ -33,14 +33,14 @@
    when: (ansible_distribution == "RedHat") and ( ansible_distribution_major_version == "7")
 
  - name: Add repo for Fedora
-   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
+   get_url: url=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution_major_version }}/arangodb.repo  dest=/etc/yum.repos.d/arangodb.repo
    when: ansible_distribution == "Fedora"
- 
+
  - name: Add the zypper repo for Suse family
    zypper_repository: repo=https://www.arangodb.com/repositories/arangodb2/{{ ansible_distribution }}_{{ ansible_distribution_version }}/arangodb.repo refresh=yes state=present
    when: ansible_distribution == "openSUSE"
 
- - name: Install the package for arangodb 
+ - name: Install the package for arangodb
    package: name=arangodb state=latest
 
  - name: Ensure arangodb group exists
