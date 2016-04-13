@@ -44,3 +44,5 @@ galaxy_info:
     - arangodb
     - nosql
     - graphdb
+
+  dependencies: []
