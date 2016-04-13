@@ -45,4 +45,5 @@ galaxy_info:
     - nosql
     - graphdb
 
-  dependencies: []
+
+dependencies: []
